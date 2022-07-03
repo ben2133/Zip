@@ -7,33 +7,59 @@ namespace Zip
     {
         static int Main(string[] args)
         {
-            if (args[1][0] != '/')
-            {
-                // без название архива test
-                if (args.Length == 2)
-                    Console.WriteLine(CreateArchive(args[0], args[1]));
+            // Help:
+            if (args[0] == "-h")
+                Console.WriteLine("\nCreating new archive:\n" +
+                    "\tzip /c [filename] or [directory path] - Create new archive\n" +
+                    "\tzip /c [filename] or [directory path] [archive type] - Create new archive\n" +
+                    "\tzip /c [filename] or [directory path] [archive type] [new archive name] - Create new archive\n\n" +
+                    "Read file list from archive:\n" +
+                    "\tzip /r [filename] - Get list of element in the archive\n\n" +
+                    "Unziping File:\n" +
+                    "\tzip /u [archive file name] - Unziping archive file\n" +
+                    "\tzip /u [archive file name] [unziping directory] - Unziping archive file");
 
-                // все параметры
-                else if (args.Length == 3)
-                    Console.WriteLine(CreateArchive(args[0], args[1], args[2]));
+            // New archive:
+            else if (args[0] == "/c")
+            {
+                switch (args.Length) {
+                    // без название и без типа архива
+                    case 2:
+                        Console.WriteLine(CreateArchive(args[1]));
+                        break;
+                    // с типом файла
+                    case 3:
+                        Console.WriteLine(CreateArchive(args[1], args[2]));
+                        break;
+                    // с насзвание и с типом файла
+                    case 4:
+                        Console.WriteLine(CreateArchive(args[1], args[2], args[3]));
+                        break;
+                }
             }
 
-            else
+            // Reading list of file archive:
+            else if (args[0] == "/r")
             {
-                // чтения файла
-                if (args[1] == "/r")
-                {
-                    var nameFull = ReadArchive(args[0]);
+                string[] nameFull = ReadArchive(args[1]);
 
-                    foreach (var name in nameFull)
-                    {
-                        Console.WriteLine(name);
-                    }
+                foreach (string name in nameFull)
+                {
+                    Console.WriteLine(name);
                 }
+            }
 
-                else if (args[1] == "/o")
+            // Unzip archive:
+            else if (args[0] == "/u")
+            {
+                switch (args.Length)
                 {
-                    Console.WriteLine( GetFromArchive(args[0], args[2]) );
+                    case 2:
+                        Console.WriteLine(GetFromArchive(args[1]));
+                        break;
+                    case 3:
+                        Console.WriteLine(GetFromArchive(args[1], args[2]));
+                        break;
                 }
             }
 
@@ -46,15 +72,16 @@ namespace Zip
         /// <param name="Type"> Тип создаваемого архива по Default = .zip </param>
         /// <param name="NewArchive"> Название создаеваемого архива по Default = archive </param>
         /// <returns> Если архив создан успешно возврашает true. В ином случае false </returns>
-        public static Boolean CreateArchive(String Directory, String Type = "zip", String NewArchive = "archive")
+        public static string CreateArchive(String Directory, String Type = "zip", String NewArchive = "ouput_archive")
         {
             try
             {
-                ZipFile.CreateFromDirectory(Directory, (NewArchive + "." + Type)); // args[0], (args[2] + "." + args[1])
-                return true;
-            } catch
+                ZipFile.CreateFromDirectory(Directory, (NewArchive + "." + Type)); // args[1], (args[3] + "." + args[2])
+                return NewArchive + "." + Type + "\nArchive created";
+            }
+            catch
             {
-                return false;
+                return "Error with create new archive";
             }
         }
 
@@ -62,15 +89,15 @@ namespace Zip
         /// <param name="Archive"> Название архива </param>
         /// <param name="Directory"> Дироектория для разархивацию </param>
         /// <returns> True Если разархивация получиться Flase Если не получается разархивация </returns>
-        public static Boolean GetFromArchive( String Archive, String Directory )
+        public static string GetFromArchive( String Archive, String Directory = "UnZip")
         {
             try
             {
                 ZipFile.ExtractToDirectory(Archive, Directory);
-                return true;
+                return $"Unzip file succes от directory {Directory} !!!";
             } catch
             {
-                return false;
+                return "Unzip failed!!!";
             }
         }
 
