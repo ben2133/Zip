@@ -9,7 +9,7 @@ namespace Zip
         {
             if (args[1][0] != '/')
             {
-                // без название архива
+                // без название архива test
                 if (args.Length == 2)
                     Console.WriteLine(CreateArchive(args[0], args[1]));
 
