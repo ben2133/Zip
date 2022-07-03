@@ -5,8 +5,8 @@ namespace Zip
 {
     class Program
     {
-        static int Main(string[] args)
-        {
+        static void Main(string[] args)
+        { 
             // Help:
             if (args[0] == "-h")
                 Console.WriteLine("\nCreating new archive:\n" +
@@ -41,9 +41,7 @@ namespace Zip
             // Reading list of file archive:
             else if (args[0] == "/r")
             {
-                string[] nameFull = ReadArchive(args[1]);
-
-                foreach (string name in nameFull)
+                foreach (string name in ReadArchive(args[1]))
                 {
                     Console.WriteLine(name);
                 }
@@ -62,8 +60,6 @@ namespace Zip
                         break;
                 }
             }
-
-            return 0;
         }
 
 
@@ -72,7 +68,7 @@ namespace Zip
         /// <param name="Type"> Тип создаваемого архива по Default = .zip </param>
         /// <param name="NewArchive"> Название создаеваемого архива по Default = archive </param>
         /// <returns> Если архив создан успешно возврашает true. В ином случае false </returns>
-        public static string CreateArchive(String Directory, String Type = "zip", String NewArchive = "ouput_archive")
+        public static string CreateArchive(string Directory, string Type = "zip", string NewArchive = "ouput_archive")
         {
             try
             {
@@ -89,7 +85,7 @@ namespace Zip
         /// <param name="Archive"> Название архива </param>
         /// <param name="Directory"> Дироектория для разархивацию </param>
         /// <returns> True Если разархивация получиться Flase Если не получается разархивация </returns>
-        public static string GetFromArchive( String Archive, String Directory = "UnZip")
+        public static string GetFromArchive( string Archive, string Directory = "UnZip")
         {
             try
             {
@@ -104,24 +100,25 @@ namespace Zip
         /// <summary> Функция для чтения данных из арзива </summary>
         /// <param name="arhive"> Название архива </param>
         /// <returns> Возврашает массив с названиеями файла которые находятся в архиве. Возврашает null если архив пуст </returns>
-        public static String[] ReadArchive(String arhive)
+        public static string[] ReadArchive(string arhive)
         {
-            String[] fileName;
             try
             {
                 // открытие архива в режиме чтения
                 using (ZipArchive zipArchive = ZipFile.OpenRead(arhive))
                 {
-                    fileName = new String[zipArchive.Entries.Count];
+                    string[] fileName = new string[zipArchive.Entries.Count];
+
                     for (int i = 0; i < zipArchive.Entries.Count; i++)
                     {
                         fileName[i] = zipArchive.Entries[i].FullName;
                     }
+
                     return fileName;
                 }
             } catch
             {
-                return fileName = new String[] { };
+                return new string[] { };
             }
         }
 
