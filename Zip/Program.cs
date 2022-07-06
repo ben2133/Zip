@@ -5,6 +5,67 @@ namespace Zip
 {
     class Program
     {
+        /// <summary> Функция создание новых архиво </summary>
+        /// <param name="Directory"> Принимает название директории обизательный параметр </param>
+        /// <param name="Type"> Тип создаваемого архива по Default = .zip </param>
+        /// <param name="NewArchive"> Название создаеваемого архива по Default = archive </param>
+        /// <returns> Если архив создан успешно возврашает true. В ином случае false </returns>
+        public static string CreateArchive(string Directory, string Type = "zip", string NewArchive = "ouput_archive")
+        {
+            try
+            {
+                ZipFile.CreateFromDirectory(Directory, (NewArchive + "." + Type)); // args[1], (args[3] + "." + args[2])
+                return NewArchive + "." + Type + "\nArchive created";
+            }
+            catch
+            {
+                return "Error with create new archive";
+            }
+        }
+
+        /// <summary> Функция разврхивировнаия </summary>
+        /// <param name="Archive"> Название архива </param>
+        /// <param name="Directory"> Дироектория для разархивацию </param>
+        /// <returns> True Если разархивация получиться Flase Если не получается разархивация </returns>
+        public static string GetFromArchive(string Archive, string Directory = "UnZip")
+        {
+            try
+            {
+                ZipFile.ExtractToDirectory(Archive, Directory);
+                return $"Unzip file succes от directory {Directory} !!!";
+            }
+            catch
+            {
+                return "Unzip failed!!!";
+            }
+        }
+
+        /// <summary> Функция для чтения данных из арзива </summary>
+        /// <param name="arhive"> Название архива </param>
+        /// <returns> Возврашает массив с названиеями файла которые находятся в архиве. Возврашает null если архив пуст </returns>
+        public static string[] ReadArchive(string arhive)
+        {
+            try
+            {
+                // открытие архива в режиме чтения
+                using (ZipArchive zipArchive = ZipFile.OpenRead(arhive))
+                {
+                    string[] fileName = new string[zipArchive.Entries.Count];
+
+                    for (int i = 0; i < zipArchive.Entries.Count; i++)
+                    {
+                        fileName[i] = zipArchive.Entries[i].FullName;
+                    }
+
+                    return fileName;
+                }
+            }
+            catch
+            {
+                return new string[] { };
+            }
+        }
+
         static void Main(string[] args)
         { 
             // Help:
@@ -61,66 +122,5 @@ namespace Zip
                 }
             }
         }
-
-
-        /// <summary> Функция создание новых архиво </summary>
-        /// <param name="Directory"> Принимает название директории обизательный параметр </param>
-        /// <param name="Type"> Тип создаваемого архива по Default = .zip </param>
-        /// <param name="NewArchive"> Название создаеваемого архива по Default = archive </param>
-        /// <returns> Если архив создан успешно возврашает true. В ином случае false </returns>
-        public static string CreateArchive(string Directory, string Type = "zip", string NewArchive = "ouput_archive")
-        {
-            try
-            {
-                ZipFile.CreateFromDirectory(Directory, (NewArchive + "." + Type)); // args[1], (args[3] + "." + args[2])
-                return NewArchive + "." + Type + "\nArchive created";
-            }
-            catch
-            {
-                return "Error with create new archive";
-            }
-        }
-
-        /// <summary> Функция разврхивировнаия </summary>
-        /// <param name="Archive"> Название архива </param>
-        /// <param name="Directory"> Дироектория для разархивацию </param>
-        /// <returns> True Если разархивация получиться Flase Если не получается разархивация </returns>
-        public static string GetFromArchive( string Archive, string Directory = "UnZip")
-        {
-            try
-            {
-                ZipFile.ExtractToDirectory(Archive, Directory);
-                return $"Unzip file succes от directory {Directory} !!!";
-            } catch
-            {
-                return "Unzip failed!!!";
-            }
-        }
-
-        /// <summary> Функция для чтения данных из арзива </summary>
-        /// <param name="arhive"> Название архива </param>
-        /// <returns> Возврашает массив с названиеями файла которые находятся в архиве. Возврашает null если архив пуст </returns>
-        public static string[] ReadArchive(string arhive)
-        {
-            try
-            {
-                // открытие архива в режиме чтения
-                using (ZipArchive zipArchive = ZipFile.OpenRead(arhive))
-                {
-                    string[] fileName = new string[zipArchive.Entries.Count];
-
-                    for (int i = 0; i < zipArchive.Entries.Count; i++)
-                    {
-                        fileName[i] = zipArchive.Entries[i].FullName;
-                    }
-
-                    return fileName;
-                }
-            } catch
-            {
-                return new string[] { };
-            }
-        }
-
     }
 }
